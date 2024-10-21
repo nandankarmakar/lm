@@ -1,0 +1,13 @@
+.form-conatiner{
+    margin-left: 5%;
+    margin-right: 2%;
+    margin-bottom: 5%;
+    margin-top: 5%;
+    width: 90%;
+    height: 95%;
+    border-radius: 5px;
+    background-color: #E7F1F3;
+}
+.datepicker {
+    z-index: 1;
+}

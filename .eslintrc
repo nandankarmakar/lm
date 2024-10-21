@@ -1,0 +1,53 @@
+{
+    "root": true,
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "env": {
+      "es6": true,
+      "node": true,
+      "jest": true
+    },
+  
+      "extends": [
+          "eslint:recommended",
+          "plugin:@typescript-eslint/eslint-recommended",
+          "plugin:@typescript-eslint/recommended",
+          "prettier"
+      ],
+      "plugins": [
+        "prettier",
+        "import"
+      ],
+      "rules": {
+        "eqeqeq": [
+          "error",
+          "always"
+        ],
+        "@typescript-eslint/no-explicit-any":"error",
+        "@typescript-eslint/no-unused-vars":"error",
+        "no-console":"error",
+        "prettier/prettier": [
+          "error",
+          {
+            "printWidth":120,
+            "braketSpacing":true,
+            "singleQuote":true,
+            "tabWidth":2,
+            "useTabs":false
+          }
+        ],
+        "sort-imports":"off",
+        "@typescript-eslint/explicit-function-return-type": [
+          "error",
+          {"allowExpressions": true, "allowTypedFunctionExpressions": true}
+        ],
+        "@typescript-eslint/lines-between-class-members": [
+          "error",
+          {
+            "expectAfterSinleLine": false
+          }
+        ]
+      },
+  }
