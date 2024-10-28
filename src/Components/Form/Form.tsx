@@ -1,13 +1,85 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState } from 'react';
 import { DateRangeType } from 'react-tailwindcss-datepicker';
 import DatePicker from 'react-tailwindcss-datepicker';
 import './Form.css';
+import Modal from '../Modal/Modal';
+import { CompanyCode } from '../Modal/model';
 
 const Form: React.FC = () => {
+  const [openModal, setOpenModal] = React.useState(false);
+  const [title, setTile] = useState('');
+  const [modalContent, setModalContent] = useState<CompanyCode[]>([]);
+  const [companyCode, setCompanyCode] = useState('');
+  const [productType, setproductType] = useState('');
+
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({
+    companyCode: '',
+    product: '',
+    isin: '',
+    collateralBasket: '',
+  });
+
+  const [activeInput, setActiveInput] = useState<string>('');
+
   const [date, setDate] = React.useState<DateRangeType | null>({
     startDate: null,
     endDate: new Date(),
   });
+
+  const companyDetail: CompanyCode[] = [
+    {
+      companyName: 'ABC',
+      companyCode: 'CDE',
+      country: 'INDIA',
+      currency: 'INR',
+    },
+    {
+      companyName: 'NGN',
+      companyCode: 'GDF',
+      country: 'INDIA',
+      currency: 'INR',
+    },
+  ];
+
+  const productDetail: CompanyCode[] = [
+    {
+      companyCode: 'GFG',
+      companyName: 'GFG',
+      country: 'DE',
+      currency: 'GBR',
+    },
+  ];
+
+  const [companyDetails, setCompanyDetails] = useState<CompanyCode[]>(companyDetail);
+  const [productDetails, setProductDetails] = useState<CompanyCode[]>(productDetail);
+
+  const shouldOpenModal = (content: CompanyCode[], title: string, inputName: string): void => {
+    setTile(title);
+    setModalContent(content);
+    setActiveInput(inputName);
+    setOpenModal(true);
+  };
+
+  const handleModalClosed = (): void => {
+    setOpenModal(false);
+  };
+
+  const handleCompanyCode = (companyCode: string): void => {
+    setCompanyCode(companyCode);
+    setOpenModal(false);
+  };
+
+  const handleProductType = (productType: string): void => {
+    setproductType(productType);
+    setOpenModal(false);
+  };
+
+  const handleValueSelect = (value: string): void => {
+    setInputValues((prev) => ({ ...prev, [activeInput]: value }));
+    setOpenModal(false);
+  };
+
   return (
     <div className="form-conatiner shadow-md sm:rounded-lg">
       <div>
@@ -17,28 +89,28 @@ const Form: React.FC = () => {
             <label htmlFor="company_code" className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">
               Company Code
             </label>
-            <select
+            <input
+              placeholder="Company Code"
+              type="text"
               id="company_code"
+              value={inputValues.companyCode}
               className="bg-white-50 text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option selected>Choose a company code</option>
-              <option value="BR">Barclays</option>
-              <option value="DB">Deutsche Boerse</option>
-            </select>
+              onClick={() => shouldOpenModal(companyDetails, 'Company Code', 'companyCode')}
+            />
           </div>
           {/* Product */}
           <div className="text-start ml-2 mr-2 p-2">
             <label htmlFor="product" className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">
               Product
             </label>
-            <select
+            <input
+              placeholder="Product"
+              type="text"
               id="product"
+              value={inputValues.product}
               className="bg-white-50 text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option selected>Choose a Product</option>
-              <option value="US">Barclays</option>
-              <option value="CA">Deutsche Boerse</option>
-            </select>
+              onClick={() => shouldOpenModal(productDetails, 'Product', 'product')}
+            />
           </div>
           {/* ISIN */}
           <div className="text-start ml-2 mr-2 p-2">
@@ -64,7 +136,7 @@ const Form: React.FC = () => {
               id="collateral_basket"
               className="bg-white-50  text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
-              <option selected>Choose an collateral basket</option>
+              <option selected>Choose a collateral basket</option>
               <option value="US">1234567</option>
               <option value="CA">1234567</option>
             </select>
@@ -125,6 +197,14 @@ const Form: React.FC = () => {
             </button>
           </div>
         </form>
+        {/* Modal */}
+        <Modal
+          isOpen={openModal}
+          onClose={handleModalClosed}
+          title={title}
+          content={modalContent}
+          onSelect={handleValueSelect}
+        />
       </div>
     </div>
   );
