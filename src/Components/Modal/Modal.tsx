@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
-import { CompanyCode } from './model';
+import { CompanyCode, ISIN, ProductType } from './model';
 import './Modal.css';
 
 interface ModalProps {
@@ -9,12 +9,11 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children?: React.ReactNode;
-  content?: CompanyCode[];
+  content?: CompanyCode[] | ProductType[] | ISIN[];
   onSelect: (value: string) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title, content, onSelect }) => {
-  const [companyCode, setCompanyCode] = useState('');
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, onSelect }) => {
   console.log(content);
   if (!isOpen) return null;
   return (
@@ -58,46 +57,160 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title, content
             X
           </button>
         </div>
-        <div className="relative overflow-x-auto overflow-y-auto h-96 pl-5">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-2 py-2">
-                  companyCode
-                </th>
-                <th scope="col" className="px-2 py-2">
-                  companyName
-                </th>
-                <th scope="col" className="px-2 py-2">
-                  countryCode
-                </th>
-                <th scope="col" className="px-2 py-2">
-                  currency
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {content?.map((company: CompanyCode) => (
-                <tr key={Math.random() * 10000} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {company.companyCode}
-                  </td>
-                  <td className="px-2 py-2">{company.companyName}</td>
-                  <td className="px-2 py-2">{company.country}</td>
-                  <td className="px-2 py-2">{company.currency}</td>
-                  <td>
-                    <button
-                      className="focus:outline-none text-white text-xs bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1 py-0.5 me-2 mb-2 dark:focus:ring-yellow-900"
-                      onClick={() => onSelect && onSelect(company.companyCode)}
-                    >
-                      select
-                    </button>
-                  </td>
+        {/* For companyCode */}
+        {title === 'CompanyCode' ? (
+          <div className="relative overflow-x-auto overflow-y-auto h-96 pl-5">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-2 py-2">
+                    companyCode
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    companyName
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    countryCode
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    currency
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {content?.map((item) => {
+                  if ('companyCode' in item) {
+                    const company = item as CompanyCode;
+                    return (
+                      <tr
+                        key={Math.random() * 10000}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          {company.companyCode}
+                        </td>
+                        <td className="px-2 py-2">{company.companyName}</td>
+                        <td className="px-2 py-2">{company.country}</td>
+                        <td className="px-2 py-2">{company.currency}</td>
+                        <td>
+                          <button
+                            className="focus:outline-none text-white text-xs bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1 py-0.5 me-2 mb-2 dark:focus:ring-yellow-900"
+                            onClick={() => onSelect && onSelect(company.companyCode)}
+                          >
+                            select
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return null;
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+        {title === 'Product' ? (
+          <div className="relative overflow-x-auto overflow-y-auto h-96 pl-5">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-2 py-2">
+                    productType
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    productText
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    companyCode
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {content?.map((item) => {
+                  if ('productType' in item) {
+                    const product = item as ProductType;
+                    return (
+                      <tr
+                        key={Math.random() * 10000}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          {product.productType}
+                        </td>
+                        <td className="px-2 py-2">{product.productText}</td>
+                        <td className="px-2 py-2">{product.companyCode}</td>
+                        <td>
+                          <button
+                            className="focus:outline-none text-white text-xs bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1 py-0.5 me-2 mb-2 dark:focus:ring-yellow-900"
+                            onClick={() => onSelect && onSelect(product.productType)}
+                          >
+                            select
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return null;
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+        {title === 'ISIN' ? (
+          <div className="relative overflow-x-auto overflow-y-auto h-96 pl-5">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-2 py-2">
+                    secClassId
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    productType
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    longName
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    issuer
+                  </th>
+                  <th scope="col" className="px-2 py-2">
+                    secClassification
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {content?.map((item) => {
+                  if ('secClassId' in item) {
+                    const product = item as ISIN;
+                    return (
+                      <tr
+                        key={Math.random() * 10000}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          {product.secClassId}
+                        </td>
+                        <td className="px-2 py-2">{product.productType}</td>
+                        <td className="px-2 py-2">{product.longName}</td>
+                        <td className="px-2 py-2">{product.issuer}</td>
+                        <td className="px-2 py-2">{product.secClassification}</td>
+                        <td>
+                          <button
+                            className="focus:outline-none text-white text-xs bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1 py-0.5 me-2 mb-2 dark:focus:ring-yellow-900"
+                            onClick={() => onSelect && onSelect(product.secClassId)}
+                          >
+                            select
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return null;
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -4,14 +4,12 @@ import { DateRangeType } from 'react-tailwindcss-datepicker';
 import DatePicker from 'react-tailwindcss-datepicker';
 import './Form.css';
 import Modal from '../Modal/Modal';
-import { CompanyCode } from '../Modal/model';
+import { CompanyCode, ISIN, ProductType } from '../Modal/model';
 
 const Form: React.FC = () => {
   const [openModal, setOpenModal] = React.useState(false);
-  const [title, setTile] = useState('');
-  const [modalContent, setModalContent] = useState<CompanyCode[]>([]);
-  const [companyCode, setCompanyCode] = useState('');
-  const [productType, setproductType] = useState('');
+  const [title, setTitle] = useState('');
+  const [modalContent, setModalContent] = useState<CompanyCode[] | ProductType[] | ISIN[]>([]);
 
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({
     companyCode: '',
@@ -34,44 +32,40 @@ const Form: React.FC = () => {
       country: 'INDIA',
       currency: 'INR',
     },
+  ];
+
+  const productDetail: ProductType[] = [
     {
-      companyName: 'NGN',
-      companyCode: 'GDF',
-      country: 'INDIA',
-      currency: 'INR',
+      productType: 'GFG',
+      productText: 'GFG',
+      companyCode: 'DE',
     },
   ];
 
-  const productDetail: CompanyCode[] = [
+  const isinDetail: ISIN[] = [
     {
-      companyCode: 'GFG',
-      companyName: 'GFG',
-      country: 'DE',
-      currency: 'GBR',
+      secClassId: '1234',
+      productType: 'GFG',
+      longName: 'GFG',
+      issuer: 'GFG',
+      secClassification: 'GFG',
     },
   ];
 
   const [companyDetails, setCompanyDetails] = useState<CompanyCode[]>(companyDetail);
-  const [productDetails, setProductDetails] = useState<CompanyCode[]>(productDetail);
+  const [productDetails, setProductDetails] = useState<ProductType[]>(productDetail);
+  const [isinDetails, setIsinDetails] = useState<ISIN[]>(isinDetail);
 
-  const shouldOpenModal = (content: CompanyCode[], title: string, inputName: string): void => {
-    setTile(title);
+  const shouldOpenModal = (content: CompanyCode[] | ProductType[] | ISIN[], title: string, inputName: string): void => {
+    setTitle(title);
     setModalContent(content);
     setActiveInput(inputName);
     setOpenModal(true);
   };
 
   const handleModalClosed = (): void => {
-    setOpenModal(false);
-  };
-
-  const handleCompanyCode = (companyCode: string): void => {
-    setCompanyCode(companyCode);
-    setOpenModal(false);
-  };
-
-  const handleProductType = (productType: string): void => {
-    setproductType(productType);
+    setTitle('');
+    setModalContent([]);
     setOpenModal(false);
   };
 
@@ -95,7 +89,7 @@ const Form: React.FC = () => {
               id="company_code"
               value={inputValues.companyCode}
               className="bg-white-50 text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onClick={() => shouldOpenModal(companyDetails, 'Company Code', 'companyCode')}
+              onClick={() => shouldOpenModal(companyDetails, 'CompanyCode', 'companyCode')}
             />
           </div>
           {/* Product */}
@@ -104,7 +98,7 @@ const Form: React.FC = () => {
               Product
             </label>
             <input
-              placeholder="Product"
+              placeholder="Product Code"
               type="text"
               id="product"
               value={inputValues.product}
@@ -114,17 +108,17 @@ const Form: React.FC = () => {
           </div>
           {/* ISIN */}
           <div className="text-start ml-2 mr-2 p-2">
-            <label htmlFor="ISIN" className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">
+            <label htmlFor="product" className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">
               ISIN
             </label>
-            <select
-              id="ISIN"
-              className="bg-white-50  text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option selected>Choose an ISIN</option>
-              <option value="US">1234567</option>
-              <option value="CA">1234567</option>
-            </select>
+            <input
+              placeholder="ISIN"
+              type="text"
+              id="isin"
+              value={inputValues.isin}
+              className="bg-white-50 text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onClick={() => shouldOpenModal(isinDetails, 'ISIN', 'isin')}
+            />
           </div>
           {/* Collater Basket */}
 
@@ -148,6 +142,7 @@ const Form: React.FC = () => {
               Counterparty
             </label>
             <select
+              disabled
               id="counterparties"
               className="bg-white-50 text-gray-400 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
